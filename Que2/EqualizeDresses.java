@@ -29,6 +29,6 @@ public class EqualizeDresses {
     public static void main(String[] args) {
         int[] sewingMachines = { 1, 0, 5 };
         int result = EqualizeDresses(sewingMachines);
-        System.out.println(result); // Output: 2
+        System.out.println(result);
     }
 }

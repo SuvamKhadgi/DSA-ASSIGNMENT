@@ -3,8 +3,6 @@ package Que5;
 import java.util.*;
 
 class Antcolonyy {
-
-    // Parameters
     private final int numAnts;
     private final int numIterations;
     private final double alpha;
@@ -175,8 +173,6 @@ public class Antcolony {
 
         // Solve the problem
         List<Integer> bestTour = antColonyy.solve();
-
-        // Print the best tour found
         System.out.println("Best tour: " + bestTour);
     }
 }
