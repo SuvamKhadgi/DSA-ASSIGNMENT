@@ -8,7 +8,7 @@ public class ClosestToTarget {
     int[] sorted;
     int index = 0;
 
-    int target;
+    double target;
     int num;
     int[] answer;
 
@@ -73,7 +73,7 @@ public class ClosestToTarget {
         inorder(root.right);
     }
 
-    void setTarget(int n) {
+    void setTarget(double n) {
         this.target = n;
     }
 
@@ -97,11 +97,11 @@ public class ClosestToTarget {
     }
 
     public static void main(String[] args) {
-        int[] values = { 5, 3, 7, 9, 1 };
+        int[] values = { 5, 3, 4, 2, 1 };
         ClosestToTarget c = new ClosestToTarget(values);
 
-        c.setNumber(3);
-        c.setTarget(6);
+        c.setNumber(2);
+        c.setTarget(3.8);
 
         int[] result = c.findClosest();
         System.out.println(Arrays.toString(result));

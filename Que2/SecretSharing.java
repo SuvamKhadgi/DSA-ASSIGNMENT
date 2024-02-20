@@ -7,11 +7,9 @@ public class SecretSharing {
     Set<Integer> known = new HashSet<>();
 
     void newData(int start, int end) {
-
         for (int i = start; i <= end; ++i) {
             known.add(i);
         }
-
     }
 
     Set<Integer> answer() {

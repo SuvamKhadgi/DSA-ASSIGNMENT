@@ -1,127 +1,78 @@
 package Que4;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class MazeSolver {
 
-    private static class Point {
-        int x;
-        int y;
-
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    private static final char START = 'S';
-    private static final char KEY_PREFIX = 'a';
-    private static final char DOOR_PREFIX = 'A';
-
-    public static int solve(char[][] grid) {
+    public static int minStepsToCollectAllKeys(String[] grid) {
         int m = grid.length;
-        int n = grid[0].length;
+        int n = grid[0].length();
 
-        Map<Character, Point> keyLocations = new HashMap<>();
-        Set<Character> collectedKeys = new HashSet<>();
-        Point start = null;
+        int targetKeys = 0;
+        int startX = 0, startY = 0;
 
+        // Extract information from the grid
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                char cell = grid[i][j];
-                if (cell == START) {
-                    start = new Point(i, j);
-                } else if (Character.isLowerCase(cell)) {
-                    keyLocations.put(cell, new Point(i, j));
-                } else if (Character.isUpperCase(cell)) {
-                    // Skip doors without corresponding keys
-                    if (!keyLocations.containsKey(Character.toLowerCase(cell))) {
-                        continue;
-                    }
+                char cell = grid[i].charAt(j);
+                if (cell == 'S') {
+                    startX = i;
+                    startY = j;
+                } else if (cell == 'E') {
+                    targetKeys |= (1 << ('f' - 'a')); // Set the bit for the exit door
+                } else if (cell >= 'a' && cell <= 'f') {
+                    targetKeys |= (1 << (cell - 'a')); // Set the bit for the key
                 }
             }
         }
 
-        if (start == null || keyLocations.isEmpty()) {
-            return -1;
-        }
+        // Perform BFS
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][][] visited = new boolean[m][n][1 << 6]; // 1 << 6 represents the keys bitmask
+        queue.offer(new int[] { startX, startY, 0, 0 }); // {x, y, keys, steps}
 
-        int[][] distances = BFS(grid, start);
-        return findMinMoves(keyLocations, collectedKeys, start, distances);
-    }
-
-    private static int[][] BFS(char[][] grid, Point start) {
-        int m = grid.length;
-        int n = grid[0].length;
-        int[][] distances = new int[m][n];
-        Queue<Point> queue = new LinkedList<>();
-
-        queue.add(start);
-        distances[start.x][start.y] = 0;
-
+        int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
         while (!queue.isEmpty()) {
-            Point current = queue.poll();
-            int x = current.x;
-            int y = current.y;
+            int[] current = queue.poll();
+            int x = current[0];
+            int y = current[1];
+            int keys = current[2];
+            int steps = current[3];
 
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    if (dx == 0 && dy == 0) {
-                        continue;
-                    }
-                    int newX = x + dx;
-                    int newY = y + dy;
+            if (keys == targetKeys) {
+                return steps; // All keys collected, return the steps
+            }
 
-                    if (newX >= 0 && newX < m && newY >= 0 && newY < n && grid[newX][newY] != 'W') {
-                        if (distances[newX][newY] == 0) {
-                            distances[newX][newY] = distances[x][y] + 1;
-                            queue.add(new Point(newX, newY));
+            for (int[] dir : directions) {
+                int newX = x + dir[0];
+                int newY = y + dir[1];
+
+                if (newX >= 0 && newX < m && newY >= 0 && newY < n && grid[newX].charAt(newY) != 'W') {
+                    char cell = grid[newX].charAt(newY);
+
+                    if (cell == 'E' || cell == 'P' || (cell >= 'a' && cell <= 'f')
+                            || (cell >= 'A' && cell <= 'F' && (keys & (1 << (cell - 'A'))) != 0)) {
+                        int newKeys = keys;
+                        if (cell >= 'a' && cell <= 'f') {
+                            newKeys |= (1 << (cell - 'a')); // Collect the key
+                        }
+
+                        if (!visited[newX][newY][newKeys]) {
+                            visited[newX][newY][newKeys] = true;
+                            queue.offer(new int[] { newX, newY, newKeys, steps + 1 });
                         }
                     }
                 }
             }
         }
 
-        return distances;
-    }
-
-    // Corrected function to avoid redundant exploration
-    private static int findMinMoves(Map<Character, Point> keyLocations, Set<Character> collectedKeys, Point current,
-            int[][] distances) {
-        if (collectedKeys.size() == keyLocations.size()) {
-            return distances[current.x][current.y];
-        }
-
-        int minMoves = Integer.MAX_VALUE;
-        for (Map.Entry<Character, Point> entry : keyLocations.entrySet()) {
-            char key = entry.getKey();
-            Point keyLocation = entry.getValue();
-
-            if (!collectedKeys.contains(key)) {
-                collectedKeys.add(key);
-                // Only explore reachable keys that haven't been explored before
-                if (distances[keyLocation.x][keyLocation.y] > 0) {
-                    int distanceToKey = distances[keyLocation.x][keyLocation.y];
-                    int movesFromKey = findMinMoves(keyLocations, collectedKeys, keyLocation, distances);
-                    if (movesFromKey != -1) {
-                        minMoves = Math.min(minMoves, distanceToKey + movesFromKey);
-                    }
-                }
-                collectedKeys.remove(key);
-            }
-        }
-
-        return minMoves == Integer.MAX_VALUE ? -1 : minMoves;
+        return -1; // All possible moves explored and keys not collected, return -1
     }
 
     public static void main(String[] args) {
-        char[][] grid = {
-                { 'S', 'P', 'q', 'P', 'P' },
-                { 'W', 'W', 'W', 'P', 'W' },
-                { 'r', 'P', 'Q', 'P', 'R' }
-        };
-
-        int shortestPathLength = solve(grid);
-        System.out.println("Shortest path length to collect all keys: " + shortestPathLength);
+        String[] grid = { "SPaPP", "WWWPW", "bPAPB" };
+        int result = minStepsToCollectAllKeys(grid);
+        System.out.println("Minimum number of moves: " + result); // Output: 8
     }
 }

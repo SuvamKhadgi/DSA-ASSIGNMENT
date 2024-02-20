@@ -5,19 +5,15 @@ public class Planing {
         if (costs == null || costs.length == 0 || costs[0].length == 0) {
             return 0;
         }
-
         int n = costs.length;
         int k = costs[0].length;
-
         // dp[i][j] represents the minimum cost to decorate venues up to i with the last
         // venue decorated with theme j
         int[][] dp = new int[n][k];
-
         // Initialize the first row of dp with the costs of decorating the first venue
         for (int j = 0; j < k; j++) {
             dp[0][j] = costs[0][j];
         }
-
         // Iterate through the venues starting from the second one
         for (int i = 1; i < n; i++) {
             for (int j = 0; j < k; j++) {
