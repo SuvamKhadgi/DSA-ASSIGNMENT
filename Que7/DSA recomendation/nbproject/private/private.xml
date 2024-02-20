@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/view/login.java</file>
-            <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/view/Post.java</file>
             <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/view/signup.java</file>
-            <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/model/signupModel.java</file>
+            <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/database/MyConnection.java</file>
             <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/controller/signupController.java</file>
             <file>file:/C:/Users/LEGION/Downloads/DSA%20recomendation/DSA%20recomendation/src/view/Dashboard.java</file>
         </group>
